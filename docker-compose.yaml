@@ -1,0 +1,62 @@
+version: '3'
+
+services:
+  seleniumhub:
+    image: selenium/hub
+    container_name: selenium-hub
+    ports:
+      - "4444:4444"
+    networks: 
+      - grid
+    
+  chrome:
+    image: selenium/node-chrome
+    container_name: chrome
+    depends_on:
+      - seleniumhub
+    environment:
+      - HUB_HOST=seleniumhub
+      - HUB_PORT=4444
+    networks: 
+     - grid
+    
+  firefox:
+    image: selenium/node-firefox
+    container_name: firefox
+    depends_on:
+      - seleniumhub
+    environment:
+      - HUB_HOST=seleniumhub
+      - HUB_PORT=4444
+    networks: 
+     - grid
+
+  chrome-vnc:
+    image: selenium/node-chrome-debug
+    container_name: chrome-vnc
+    ports:
+      - "32771:5900"
+    depends_on:
+      - seleniumhub
+    environment:
+      - HUB_HOST=seleniumhub
+      - HUB_PORT=4444
+    networks: 
+     - grid
+    
+  firefox-vnc:
+    image: selenium/node-firefox-debug
+    container_name: firefox-vnc
+    ports:
+      - "32772:5900"
+    depends_on:
+      - seleniumhub
+    environment:
+      - HUB_HOST=seleniumhub
+      - HUB_PORT=4444
+    networks: 
+     - grid
+
+networks:
+  grid:
+    driver: bridge
